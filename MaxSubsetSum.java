@@ -12,17 +12,21 @@ class MaxSubsetSum {
 	public static void println(String s) { System.out.println(s); }
 	
 	public static void main(String[] args) {
-		println("Hello World");
-		
+		// test input from assignment { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
+		// my test input { -2, 1, -3, 4, -1, 2, 1, -5, 4, 5, 6, 4, 5, 6, 4, 9 };
+		// my test input { -2, 1, -3, 4, -1, 2, 1, -5, 9, 5, 6, 4, 5, 6, 4, 1 };
 		// initialize scanner and get input as string array
 		Scanner sc = new Scanner(System.in);
 		int[] nums;
 		boolean inputGood = false;
 		
-		while (!inputGood) {	
-			String[] input = sc.nextLine().split(", ");
+		while (!inputGood) {
+			int window = GetWindow();
 
+			System.out.print("Enter numbers: ");
+			String[] input = sc.nextLine().split(", ");
 			nums = new int[input.length];
+
 			try {
 				for (int i = 0; i < input.length; i++) {
 					nums[i] = Integer.parseInt(input[i]);
@@ -38,12 +42,30 @@ class MaxSubsetSum {
 				//print starting array
 				String out = String.join(", ", input);
 				println(out);
-				Result outres = FindMaxSubsetSum(nums);
+				Result outres = FindMaxSubsetSum(nums, window);
 				println(outres.Start + " " + outres.End + " " + outres.Sum);
 			}
 		}
 	}
-	
+
+	public static int GetWindow() {
+		Scanner sc = new Scanner(System.in);
+		int window = 0;
+		boolean inputGood = false;
+		while (!inputGood) {
+			System.out.print("Enter size of the array: ");
+			try {
+				window = sc.nextInt();
+				inputGood = true;
+			} catch (Exception e)
+			{
+				sc.next();
+			}
+		}
+
+		return window;
+	}
+
 	public static int GetSum(int[] arr) {
 		int sum = 0;
 		for (int i : arr) {
@@ -52,10 +74,10 @@ class MaxSubsetSum {
 		return sum;
 	}
 	
-	public static Result FindMaxSubsetSum(int[] nums) {
+	public static Result FindMaxSubsetSum(int[] nums, int window) {
 		Result res = new Result();
 		for (int i = 0; i < nums.length; i++) {
-			for (int j = i + 1; j < nums.length; j++) {
+			for (int j = i + 1; j < i + window; j++) {
 				int[] copy = Arrays.copyOfRange(nums, i, j + 1);
 				int sum = GetSum(copy);
 				if (sum > res.Sum) {
